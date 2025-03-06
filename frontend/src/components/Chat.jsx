@@ -10,9 +10,8 @@ export default function CommunityChat() {
 
   useEffect(() => {
     // Get or create anonymous ID
-    const storedId = localStorage.getItem('anonymousId') || generateAnonymousId();
-    setAnonymousId(storedId);
-    localStorage.setItem('anonymousId', storedId);
+    const newId = generateAnonymousId();
+    setAnonymousId(newId);
 
     // Fetch message history
     const fetchMessages = async () => {
@@ -50,14 +49,14 @@ export default function CommunityChat() {
   };
 
   return (
-    <div className="min-w-4xl mx-auto p-4">
+    <div className="min-w-4xl mx-auto p-4 container mt-10">
       <div className="w-full min-h-10xl mb-4">
         <h2 className="text-4xl font-bold mb-4">Community Chat</h2>
         <div className="mb-4 text-lg font-medium text-gray-800">
         Your Anonymous ID: <span className="text-pink-600 dark:text-pink-700">{anonymousId}</span>
         </div>
         
-        <div className="h-96 overflow-y-auto mb-4">
+        <div className="h-96 min-h-[58vh] custom-scrollbar overflow-y-auto mb-4">
           {messages.map(message => (
             <div key={message._id} className="mb-4">
               <div className="flex items-center text-sm font-bold mb-1">

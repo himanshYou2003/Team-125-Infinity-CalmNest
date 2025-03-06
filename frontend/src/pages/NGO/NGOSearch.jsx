@@ -26,18 +26,18 @@ export default function NGOSearch() {
   }, [searchAddress])
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto m-10 p-10">
       <div className="mb-20 m-30">
         <h2 className="text-4xl font-bold mb-6">Search NGOs by Location</h2>
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
-  <input
-    type="text"
-    placeholder="Enter city, area or full address"
-    className="input-field w-full"
-    value={searchAddress}
-    onChange={(e) => setSearchAddress(e.target.value)}
-  />
-</div>
+          <input
+            type="text"
+            placeholder="Enter city, area or full address"
+            className="input-field w-full"
+            value={searchAddress}
+            onChange={(e) => setSearchAddress(e.target.value)}
+          />
+        </div>
       </div>
 
       {loading ? (

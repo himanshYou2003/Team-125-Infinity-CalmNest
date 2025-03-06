@@ -17,11 +17,13 @@ export default function App() {
     <Router>
       <AuthProvider>
         <SocketProvider>
+          
         <div class="absolute top-0 -z-10 h-full w-full bg-white"><div class="absolute bottom-auto left-auto right-0 top-0 h-[500px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-[rgba(173,109,244,0.5)] opacity-50 blur-[80px]"></div></div>
           <Navbar />
-          <main className="container mx-auto px-4 py-8">
+
+          {/* <main className="container mx-auto "> */}
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Home />} />   
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/profile" element={<Profile />} />
@@ -30,8 +32,10 @@ export default function App() {
               <Route path="/forum/:id" element={<PostDetails />} />
               <Route path="/report" element={<CreateReport />} />
               <Route path="/chat" element={<Chat />} />
+
             </Routes>
-          </main>
+          {/* </main> */}
+          
         </SocketProvider>
       </AuthProvider>
     </Router>
