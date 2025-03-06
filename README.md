@@ -52,7 +52,6 @@ A full-stack community safety platform focused on women's empowerment and safety
 ### Prerequisites
 - Node.js 18+
 - MongoDB 6.0+
-- Mapbox API key (for geocoding)
 
 ### Backend Setup
 ```bash
