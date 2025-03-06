@@ -2,7 +2,7 @@
 
 A full-stack community safety platform focused on women's empowerment and safety, featuring anonymous experience sharing, NGO discovery, and real-time collaboration.
 
-![Project Banner](https://via.placeholder.com/1200x400.png?text=Community+Safety+Platform) <!-- Add actual screenshot -->
+![Project Banner](./frontend/src/assets/Hack.png) <!-- Add actual screenshot -->
 
 ## 🚀 Features
 
