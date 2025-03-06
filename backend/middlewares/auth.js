@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
+import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
 export const protect = asyncHandler(async (req, res, next) => {
@@ -22,11 +22,3 @@ export const protect = asyncHandler(async (req, res, next) => {
     throw new Error('Not authorized');
   }
 });
-
-export const authorize = (...roles) => (req, res, next) => {
-  if(!roles.includes(req.user.role)) {
-    res.status(403);
-    throw new Error(`User role ${req.user.role} not authorized`);
-  }
-  next();
-};

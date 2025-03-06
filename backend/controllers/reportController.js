@@ -17,7 +17,7 @@ export const createReport = asyncHandler(async (req, res) => {
     reportId: generateReportId()
   });
 
-  req.io.emit('new-report', report);
+  // req.io.emit('new-report', report);
   
   res.status(201).json({
     success: true,

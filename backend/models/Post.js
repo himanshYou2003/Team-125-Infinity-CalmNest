@@ -1,6 +1,17 @@
 import mongoose from 'mongoose';
+import { generateAnonymousId } from '../utils/generateAnonymousId.js';
 
 const PostSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  anonymousId: {
+    type: String,
+    required: true,
+    default: () => generateAnonymousId()
+  },
   title: {
     type: String,
     required: [true, 'Please add a title'],
@@ -17,11 +28,6 @@ const PostSchema = new mongoose.Schema({
     required: true,
     enum: ['safety-tips', 'incident-reports', 'general-discussion']
   },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
   replies: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Reply'
@@ -29,5 +35,11 @@ const PostSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+PostSchema.methods.toJSON = function() {
+  const post = this.toObject();
+  delete post.user;
+  return post;
+};
 
 export default mongoose.model('Post', PostSchema);

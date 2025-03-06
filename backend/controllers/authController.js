@@ -9,12 +9,36 @@ const generateToken = (id) => {
   });
 };
 
-// @desc    Login admin
-// @route   POST /api/v1/auth/login
-export const loginAdmin = asyncHandler(async (req, res) => {
+export const signup = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // Validate input
+  if (!email || !password) {
+    res.status(400);
+    throw new Error('Please provide email and password');
+  }
+
+  const userExists = await User.findOne({ email });
+  if (userExists) {
+    res.status(400);
+    throw new Error('User already exists');
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = await User.create({
+    email,
+    password: hashedPassword
+  });
+
+  res.status(201).json({
+    id: user._id,
+    email: user.email,
+    token: generateToken(user._id)
+  });
+});
+
+export const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
   if (!email || !password) {
     res.status(400);
     throw new Error('Please provide email and password');
@@ -26,7 +50,6 @@ export const loginAdmin = asyncHandler(async (req, res) => {
     res.json({
       id: user._id,
       email: user.email,
-      role: user.role,
       token: generateToken(user._id)
     });
   } else {
@@ -35,16 +58,12 @@ export const loginAdmin = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get current logged in user
-// @route   GET /api/v1/auth/me
 export const getCurrentUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id).select('-password');
   res.json(user);
 });
 
-// @desc    Update admin details
-// @route   PUT /api/v1/auth/updatedetails
-export const updateAdminDetails = asyncHandler(async (req, res) => {
+export const updateUserDetails = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   if (!email) {

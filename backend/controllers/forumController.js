@@ -2,8 +2,6 @@ import asyncHandler from 'express-async-handler';
 import Post from '../models/Post.js';
 import Reply from '../models/Reply.js';
 
-// @desc    Create new post
-// @route   POST /api/v1/forum/posts
 export const createPost = asyncHandler(async (req, res) => {
   const { title, content, category } = req.body;
   
@@ -14,14 +12,12 @@ export const createPost = asyncHandler(async (req, res) => {
     user: req.user.id
   });
 
-  // Broadcast new post via Socket.io
-  req.io.emit('new-post', post);
+  const sanitizedPost = post.toJSON();
+  req.io.emit('new-post', sanitizedPost);
   
-  res.status(201).json({ success: true, data: post });
+  res.status(201).json({ success: true, data: sanitizedPost });
 });
 
-// @desc    Add reply to post
-// @route   POST /api/v1/forum/posts/:id/replies
 export const addReply = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
   if(!post) {
@@ -34,31 +30,26 @@ export const addReply = asyncHandler(async (req, res) => {
     user: req.user.id
   });
 
-  // Broadcast new reply via Socket.io
-  req.io.to(req.params.id).emit('new-reply', reply);
+  const sanitizedReply = reply.toJSON();
+  req.io.to(req.params.id).emit('new-reply', sanitizedReply);
   
-  res.status(201).json({ success: true, data: reply });
+  res.status(201).json({ success: true, data: sanitizedReply });
 });
 
-// @desc    Get all posts
-// @route   GET /api/v1/forum/posts
-export const getPosts = asyncHandler(async (req, res) => {
-  const { category } = req.query;
-  const query = category ? { category } : {};
-
-  const posts = await Post.find(query)
-    .sort('-createdAt')
-    .populate('user', 'name')
+export const getPost = asyncHandler(async (req, res) => {
+  const post = await Post.findById(req.params.id)
     .populate({
       path: 'replies',
-      populate: { path: 'user', select: 'name' }
+      select: '-user'
     });
 
-  res.json({ success: true, count: posts.length, data: posts });
+  if (!post) {
+    return res.status(404).json({ success: false, error: 'Post not found' });
+  }
+
+  res.json({ success: true, data: post });
 });
 
-// @desc    Delete post (Admin only)
-// @route   DELETE /api/v1/forum/posts/:id
 export const deletePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
   
@@ -66,8 +57,11 @@ export const deletePost = asyncHandler(async (req, res) => {
     return res.status(404).json({ success: false, error: 'Post not found' });
   }
 
+  if(post.user.toString() !== req.user.id) {
+    return res.status(401).json({ success: false, error: 'Not authorized' });
+  }
+
   await Reply.deleteMany({ post: post._id });
-  
   await post.deleteOne();
 
   req.io.emit('delete-post', post._id);
